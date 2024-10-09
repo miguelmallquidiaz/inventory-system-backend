@@ -5,7 +5,7 @@ from .database import engine
 from . import models, auth
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.routers import user, category, client, subcategory, product
+from app.routers import user, category, client, subcategory, product, reservation
 from .initial_data import create_admin_user
 import uvicorn
 # Cargar variables de entorno
@@ -57,6 +57,7 @@ app.include_router(category.router, prefix=f"{VERSION}/category", tags=["categor
 app.include_router(client.router, prefix=f"{VERSION}/client", tags=["client"])
 app.include_router(subcategory.router, prefix=f"{VERSION}/subcategory", tags=["subcategory"])
 app.include_router(product.router, prefix=f"{VERSION}/product", tags=["product"])
+app.include_router(reservation.router, prefix=f"{VERSION}/reservation", tags=["reservation"])
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  # Usa el puerto de la variable de entorno PORT
