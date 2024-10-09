@@ -52,3 +52,16 @@ class Subcategory(Base):
 
     # Relationship with Products
     products = relationship("Product", back_populates="subcategory")
+
+# Product Table
+class Product(Base):
+    __tablename__ = 'products'
+    code = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), nullable=False)
+    total_stock = Column(Integer, nullable=False)
+    unit_price = Column(Numeric(10, 2), nullable=False)
+    is_active = Column(Boolean, default=True)
+    subcategory_id = Column(Integer, ForeignKey('subcategories.id'), nullable=False)
+    
+    # Relationship with Subcategory
+    subcategory = relationship("Subcategory", back_populates="products")
