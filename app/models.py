@@ -25,3 +25,15 @@ class Category(Base):
 
     # Relationship with Subcategories
     subcategories = relationship("Subcategory", back_populates="category")
+
+# Client Table
+class Client(Base):
+    __tablename__ = 'clients'
+    dni = Column(String(8), primary_key=True, nullable=False)
+    name = Column(String(50), nullable=False)
+    phone = Column(String(9), nullable=False)
+    address = Column(String(100), nullable=False)
+    email = Column(String(50), nullable=False, unique=True, index=True)
+
+    # Relationship with Reservations
+    reservations = relationship("Reservation", back_populates="client")
