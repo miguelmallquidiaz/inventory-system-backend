@@ -15,3 +15,13 @@ class User(Base):
     second_last_name = Column(String(20), nullable=False)
     phone = Column(String(9), nullable=False)
     role = Column(String(10), nullable=False, default='employee')
+
+# Category Table
+class Category(Base):
+    __tablename__ = 'categories'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50), nullable=False)
+    is_active = Column(Boolean, default=True)
+
+    # Relationship with Subcategories
+    subcategories = relationship("Subcategory", back_populates="category")
