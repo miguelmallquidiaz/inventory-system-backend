@@ -37,3 +37,18 @@ class Client(Base):
 
     # Relationship with Reservations
     reservations = relationship("Reservation", back_populates="client")
+
+# Subcategory Table
+class Subcategory(Base):
+    __tablename__ = 'subcategories'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50), nullable=False)
+    measures = Column(String(100), nullable=False)  # Example: Liters, Kilograms, Doses, etc.
+    is_active = Column(Boolean, default=True)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+
+    # Relationship with Category
+    category = relationship("Category", back_populates="subcategories")
+
+    # Relationship with Products
+    products = relationship("Product", back_populates="subcategory")
