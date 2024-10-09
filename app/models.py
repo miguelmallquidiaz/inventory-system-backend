@@ -65,3 +65,30 @@ class Product(Base):
     
     # Relationship with Subcategory
     subcategory = relationship("Subcategory", back_populates="products")
+
+class Reservation(Base):
+    __tablename__ = 'reservations'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    payment_date = Column(DATE, nullable=False)
+    delivery_date = Column(DATE, nullable=False)
+    reservation_status = Column(String(10), nullable=False, default='pending')  # Example: pending, completed
+    client_dni = Column(String(8), ForeignKey('clients.dni'), nullable=False)
+
+    # Relationship with Client
+    client = relationship("Client", back_populates="reservations")
+    
+    # Relationship with ReservationItem
+    items = relationship("ReservationItem", back_populates="reservation")
+
+class ReservationItem(Base):
+    __tablename__ = 'reservation_items'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    reservation_id = Column(Integer, ForeignKey('reservations.id'), nullable=False)
+    product_code = Column(Integer, ForeignKey('products.code'), nullable=False)  # Reference to Product
+    quantity = Column(Integer, nullable=False)
+
+    # Relationship with Reservation
+    reservation = relationship("Reservation", back_populates="items")
+    
+    # Relationship with Product
+    product = relationship("Product")
