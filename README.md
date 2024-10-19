@@ -6,7 +6,7 @@ Sistema de inventario desarrollado con FastAPI para gestionar el stock de produc
 
 ```bash
 1. Crear el entorno seguro
-python -m venv ven
+python -m venv venv
 
 2. Ingresar en el entorno seguro
 ./venv/Scripts/activate
