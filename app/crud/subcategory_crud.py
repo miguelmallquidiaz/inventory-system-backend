@@ -54,6 +54,8 @@ def update_subcategory(db: Session, subcategory_id: int, subcategory: subcategor
         db_subcategory.measures = subcategory.measures
     if subcategory.is_active is not None:
         db_subcategory.is_active = subcategory.is_active
+    if subcategory.category_id is not None:
+        db_subcategory.category_id = subcategory.category_id
 
     db.commit()
     db.refresh(db_subcategory)

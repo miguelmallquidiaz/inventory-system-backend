@@ -8,15 +8,8 @@ class SubcategoryBase(BaseModel):
     measures: str
     is_active: bool = True
 
-# Schema for creating a Subcategory
-class SubcategoryCreate(SubcategoryBase):
-    name: str
-    measures: str
-    category_id: int
-
-    # Validators for name
-    @field_validator('name')
-    def validate_name(cls, value):
+    @classmethod
+    def check_name(cls, value: str) -> str:
         value = value.strip()
         if not value:
             raise ValueError('El campo no debe ser vacío')
@@ -28,9 +21,8 @@ class SubcategoryCreate(SubcategoryBase):
             raise ValueError('El nombre debe ser solo letras y minúsculas.')
         return value
 
-    # Validators for measures
-    @field_validator('measures')
-    def validate_measures(cls, value):
+    @classmethod
+    def check_measures(cls, value: str) -> str:
         value = value.strip()
         if not value:
             raise ValueError('Las medidas no deben estar vacías')
@@ -38,11 +30,40 @@ class SubcategoryCreate(SubcategoryBase):
             raise ValueError('Las medidas no deben exceder los 100 caracteres')
         return value
 
+# Schema for creating a Subcategory
+class SubcategoryCreate(SubcategoryBase):
+    category_id: int
+
+    # Validators for name
+    @field_validator('name')
+    def validate_name(cls, value):
+        return cls.check_name(value)
+
+    # Validators for measures
+    @field_validator('measures')
+    def validate_measures(cls, value):
+        return cls.check_measures(value)
+
 # Schema for updating a Subcategory
 class SubcategoryUpdate(BaseModel):
     name: Optional[str] = None
     measures: Optional[str] = None
+    category_id: Optional[int] = None
     is_active: Optional[bool] = None
+
+    # Validators for name
+    @field_validator('name')
+    def validate_name(cls, value):
+        if value is not None:
+            return SubcategoryBase.check_name(value)
+        return value
+
+    # Validators for measures
+    @field_validator('measures')
+    def validate_measures(cls, value):
+        if value is not None:
+            return SubcategoryBase.check_measures(value)
+        return value
 
 # Schema to retrieve a Subcategory
 class Subcategory(SubcategoryBase):

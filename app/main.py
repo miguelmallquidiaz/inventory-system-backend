@@ -34,6 +34,7 @@ app = FastAPI(title="Agroselva", description="Agroselva API", lifespan=lifespan)
 
 # Configuración de CORS
 origins = [
+    "http://localhost:5173",
     FRONTEND_URL,
 ]
 

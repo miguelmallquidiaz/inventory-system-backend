@@ -5,8 +5,8 @@ from ..models import Subcategory
 from ..schemas import product_schema
 
 # Obtener producto por ID
-def get_product(db: Session, product_code: int):
-    product = db.query(models.Product).filter(models.Product.code == product_code).first()
+def get_product(db: Session, product_id: int):
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Producto no encontrado")
     return product
@@ -44,8 +44,8 @@ def create_product(db: Session, product: product_schema.ProductCreate):
     return db_product
 
 # Actualizar un producto
-def update_product(db: Session, product_code: int, product: product_schema.ProductUpdate):
-    db_product = get_product(db, product_code)
+def update_product(db: Session, product_id: int, product: product_schema.ProductUpdate):
+    db_product = get_product(db, product_id)
     if not db_product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Producto no encontrado")
 
@@ -65,12 +65,12 @@ def update_product(db: Session, product_code: int, product: product_schema.Produ
     return db_product
 
 # Deshabilitar un producto
-def disable_product(db: Session, product_code: int):
-    return update_product(db, product_code, product_schema.ProductUpdate(is_active=False))
+def disable_product(db: Session, product_id: int):
+    return update_product(db, product_id, product_schema.ProductUpdate(is_active=False))
 
 # Habilitar un producto
-def enable_product(db: Session, product_code: int):
-    return update_product(db, product_code, product_schema.ProductUpdate(is_active=True))
+def enable_product(db: Session, product_id: int):
+    return update_product(db, product_id, product_schema.ProductUpdate(is_active=True))
 
 # Obtener todos los productos
 def get_all_products(db: Session):

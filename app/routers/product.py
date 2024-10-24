@@ -57,3 +57,9 @@ async def read_products(db: Session = Depends(database.get_db), current_user: us
             detail="No se encontraron productos"
         )
     return products
+
+@router.put("/{product_id}", response_model=product_schema.Product)
+async def update_product(product_id: int, product: product_schema.ProductUpdate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
+    return product_crud.update_product(db=db, product_id=product_id, product=product)
