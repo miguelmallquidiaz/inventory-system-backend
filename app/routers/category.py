@@ -45,3 +45,11 @@ async def read_categories(db: Session = Depends(database.get_db), current_user: 
             detail="No categories found"
         )
     return categories
+
+@router.put("/{category_id}", response_model=category_schema.Category)
+async def update_category(category_id: int, category: category_schema.CategoryUpdate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    
+    updated_category = category_crud.update_category(db=db, category_id=category_id, category=category)
+    return updated_category

@@ -50,3 +50,11 @@ async def read_subcategories(db: Session = Depends(database.get_db), current_use
             detail="No se encontraron subcategorías"
         )
     return subcategories
+
+@router.put("/{subcategory_id}", response_model=subcategory_schema.Subcategory)
+async def update_subcategory(subcategory_id: int, subcategory: subcategory_schema.SubcategoryUpdate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
+    
+    updated_subcategory = subcategory_crud.update_subcategory(db=db, subcategory_id=subcategory_id, subcategory=subcategory)
+    return updated_subcategory

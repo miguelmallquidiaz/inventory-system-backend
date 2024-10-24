@@ -5,7 +5,7 @@ from .database import engine
 from . import models, auth
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.routers import user, category, client, subcategory, product, reservation
+from app.routers import user, category, client, subcategory, product, reservation, auth
 from .initial_data import create_admin_user
 import uvicorn
 # Cargar variables de entorno

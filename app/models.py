@@ -56,7 +56,7 @@ class Subcategory(Base):
 # Product Table
 class Product(Base):
     __tablename__ = 'products'
-    code = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     total_stock = Column(Integer, nullable=False)
     unit_price = Column(Numeric(10, 2), nullable=False)
@@ -84,7 +84,7 @@ class ReservationItem(Base):
     __tablename__ = 'reservation_items'
     id = Column(Integer, primary_key=True, autoincrement=True)
     reservation_id = Column(Integer, ForeignKey('reservations.id'), nullable=False)
-    product_code = Column(Integer, ForeignKey('products.code'), nullable=False)  # Reference to Product
+    product_code = Column(Integer, ForeignKey('products.id'), nullable=False)  # Reference to Product
     quantity = Column(Integer, nullable=False)
 
     # Relationship with Reservation
