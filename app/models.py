@@ -26,18 +26,6 @@ class Category(Base):
     # Relationship with Subcategories
     subcategories = relationship("Subcategory", back_populates="category")
 
-# Client Table
-class Client(Base):
-    __tablename__ = 'clients'
-    dni = Column(String(8), primary_key=True, nullable=False)
-    name = Column(String(50), nullable=False)
-    phone = Column(String(9), nullable=False)
-    address = Column(String(100), nullable=False)
-    email = Column(String(50), nullable=False, unique=True, index=True)
-
-    # Relationship with Reservations
-    reservations = relationship("Reservation", back_populates="client")
-
 # Subcategory Table
 class Subcategory(Base):
     __tablename__ = 'subcategories'
@@ -66,17 +54,17 @@ class Product(Base):
     # Relationship with Subcategory
     subcategory = relationship("Subcategory", back_populates="products")
 
+    # Relationship with ReservationItem
+    reservation_items = relationship("ReservationItem", back_populates="product")
+
 class Reservation(Base):
     __tablename__ = 'reservations'
     id = Column(Integer, primary_key=True, autoincrement=True)
     payment_date = Column(DATE, nullable=False)
     delivery_date = Column(DATE, nullable=False)
+    client_dni = Column(String(8), nullable=False)
     reservation_status = Column(String(10), nullable=False, default='pending')  # Example: pending, completed
-    client_dni = Column(String(8), ForeignKey('clients.dni'), nullable=False)
 
-    # Relationship with Client
-    client = relationship("Client", back_populates="reservations")
-    
     # Relationship with ReservationItem
     items = relationship("ReservationItem", back_populates="reservation")
 
@@ -84,11 +72,12 @@ class ReservationItem(Base):
     __tablename__ = 'reservation_items'
     id = Column(Integer, primary_key=True, autoincrement=True)
     reservation_id = Column(Integer, ForeignKey('reservations.id'), nullable=False)
-    product_code = Column(Integer, ForeignKey('products.id'), nullable=False)  # Reference to Product
+    product_code = Column(Integer, ForeignKey('products.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
+    pending_quantity = Column(Integer, nullable=False)
 
     # Relationship with Reservation
     reservation = relationship("Reservation", back_populates="items")
     
     # Relationship with Product
-    product = relationship("Product")
+    product = relationship("Product", back_populates="reservation_items")
