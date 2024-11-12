@@ -8,7 +8,7 @@ from app.schemas import product_schema, users_schema
 router = APIRouter()
 
 # Crear un producto
-@router.post("/", response_model=product_schema.Product)
+@router.post("/", response_model=product_schema.Product, status_code=status.HTTP_201_CREATED)
 async def create_product(product: product_schema.ProductCreate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")

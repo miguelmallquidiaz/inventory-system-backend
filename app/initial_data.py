@@ -24,10 +24,6 @@ def create_admin_user():
                 admin_user = users_schema.UserCreate(
                     email=admin_email,
                     password=admin_password,  # Encriptamos la contraseña
-                    name="miguel",
-                    first_surname="mallqui",
-                    second_last_name="diaz",
-                    phone="944741052",
                     role="admin"
                 )
                 user_crud.create_user(db=db, user=admin_user)

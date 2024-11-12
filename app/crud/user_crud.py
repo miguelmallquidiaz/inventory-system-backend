@@ -34,10 +34,6 @@ def create_user(db: Session, user: users_schema.UserCreate):
     db_user = models.User(
         email=user.email,
         hashed_password=hashed_password,
-        name=user.name,
-        first_surname=user.first_surname,
-        second_last_name=user.second_last_name,
-        phone=user.phone,
         role=user.role
     )
     db.add(db_user)

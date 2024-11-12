@@ -7,7 +7,7 @@ from app.schemas import category_schema, users_schema
 
 router = APIRouter()
 
-@router.post("/", response_model=category_schema.Category)
+@router.post("/", response_model=category_schema.Category, status_code=status.HTTP_201_CREATED)
 async def create_category(category: category_schema.CategoryCreate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
