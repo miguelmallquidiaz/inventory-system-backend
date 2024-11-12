@@ -8,7 +8,7 @@ from app.schemas import subcategory_schema, users_schema
 router = APIRouter()
 
 # Crear una subcategoría
-@router.post("/", response_model=subcategory_schema.Subcategory)
+@router.post("/", response_model=subcategory_schema.Subcategory, status_code=status.HTTP_201_CREATED)
 async def create_subcategory(subcategory: subcategory_schema.SubcategoryCreate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")

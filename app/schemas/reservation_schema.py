@@ -10,6 +10,13 @@ class ReservationBase(BaseModel):
     payment_date: date  # Fecha de pago
     delivery_date: date  # Fecha de entrega
 
+    # Validator for client_dni to ensure it's numeric and 8 digits long
+    @field_validator('client_dni')
+    def validate_client_dni(cls, value):
+        if not value.isdigit() or len(value) != 8:
+            raise ValueError("El DNI debe contener solo 8 dígitos numéricos.")
+        return value
+    
     # Validator for reservation_status
     @field_validator('reservation_status')
     def validate_reservation_status(cls, value):
