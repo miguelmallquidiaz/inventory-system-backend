@@ -14,20 +14,6 @@ async def create_subcategory(subcategory: subcategory_schema.SubcategoryCreate, 
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     return subcategory_crud.create_subcategory(db=db, subcategory=subcategory)
 
-# Deshabilitar una subcategoría
-@router.patch("/disable/{subcategory_id}", response_model=subcategory_schema.Subcategory)
-async def disable_subcategory(subcategory_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    return subcategory_crud.disable_subcategory(db=db, subcategory_id=subcategory_id)
-
-# Habilitar una subcategoría
-@router.patch("/enable/{subcategory_id}", response_model=subcategory_schema.Subcategory)
-async def enable_subcategory(subcategory_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    return subcategory_crud.enable_subcategory(db=db, subcategory_id=subcategory_id)
-
 # Leer una subcategoría específica
 @router.get("/{subcategory_id}", response_model=subcategory_schema.Subcategory)
 async def read_subcategory(subcategory_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):

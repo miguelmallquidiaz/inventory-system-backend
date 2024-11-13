@@ -37,11 +37,5 @@ def update_category(db: Session, category_id: int, category: category_schema.Cat
     db.refresh(db_category)
     return db_category
 
-def disable_category(db: Session, category_id: int):
-    return update_category(db, category_id, category_schema.CategoryUpdate(is_active=False))
-
-def enable_category(db: Session, category_id: int):
-    return update_category(db, category_id, category_schema.CategoryUpdate(is_active=True))
-    
 def get_all_categories(db: Session):
     return db.query(models.Category).all()

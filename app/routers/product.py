@@ -14,27 +14,6 @@ async def create_product(product: product_schema.ProductCreate, db: Session = De
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     return product_crud.create_product(db=db, product=product)
 
-# Actualizar un producto
-@router.patch("/{product_id}", response_model=product_schema.Product)
-async def update_product(product_id: int, product: product_schema.ProductUpdate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    return product_crud.update_product(db=db, product_id=product_id, product=product)
-
-# Deshabilitar un producto
-@router.patch("/disable/{product_id}", response_model=product_schema.Product)
-async def disable_product(product_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    return product_crud.disable_product(db=db, product_id=product_id)
-
-# Habilitar un producto
-@router.patch("/enable/{product_id}", response_model=product_schema.Product)
-async def enable_product(product_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    return product_crud.enable_product(db=db, product_id=product_id)
-
 # Leer un producto específico
 @router.get("/{product_id}", response_model=product_schema.Product)
 async def read_product(product_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):

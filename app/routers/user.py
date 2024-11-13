@@ -16,13 +16,3 @@ async def create_user(user: users_schema.UserCreate, db: Session = Depends(datab
     if user_crud.get_user_by_email(db, email=user.email):
         raise HTTPException(status_code=400, detail="Usuario ya registrado")
     return user_crud.create_user(db=db, user=user)
-
-@router.delete("/delete/{email}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(email: str, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
-    check_admin_permissions(current_user)
-    user = user_crud.get_user_by_email(db, email=email)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado")
-    db.delete(user)
-    db.commit()
-    return {"msg": f"Usuario eliminado exitosamente"}

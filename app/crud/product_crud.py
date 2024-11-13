@@ -64,14 +64,6 @@ def update_product(db: Session, product_id: int, product: product_schema.Product
     db.refresh(db_product)
     return db_product
 
-# Deshabilitar un producto
-def disable_product(db: Session, product_id: int):
-    return update_product(db, product_id, product_schema.ProductUpdate(is_active=False))
-
-# Habilitar un producto
-def enable_product(db: Session, product_id: int):
-    return update_product(db, product_id, product_schema.ProductUpdate(is_active=True))
-
 # Obtener todos los productos
 def get_all_products(db: Session):
     return db.query(models.Product).all()

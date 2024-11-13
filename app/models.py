@@ -70,7 +70,6 @@ class ReservationItem(Base):
     reservation_id = Column(Integer, ForeignKey('reservations.id'), nullable=False)
     product_code = Column(Integer, ForeignKey('products.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
-    pending_quantity = Column(Integer, nullable=False)
 
     # Relationship with Reservation
     reservation = relationship("Reservation", back_populates="items")
