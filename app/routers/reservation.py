@@ -9,7 +9,7 @@ router = APIRouter()
 
 # Verificar permisos del usuario (puedes usar un dependiente común)
 def check_permissions(current_user: users_schema.User):
-    if current_user.role not in ["admin", "employee"]:
+    if current_user.role not in ["local", "almacen"]:
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
 
 # Crear una nueva reserva

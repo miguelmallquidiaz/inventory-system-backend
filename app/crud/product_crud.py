@@ -23,18 +23,15 @@ def create_product(db: Session, product: product_schema.ProductCreate):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="La subcategoría no existe."
         )
-    
     existing_product = db.query(models.Product).filter(models.Product.name == product.name).first()
     if existing_product:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El producto ya existe."
         )
-    
     db_product = models.Product(
         name=product.name,
         total_stock=product.total_stock,
-        unit_price=product.unit_price,
         is_active=product.is_active,
         subcategory_id=product.subcategory_id
     )
@@ -48,18 +45,14 @@ def update_product(db: Session, product_id: int, product: product_schema.Product
     db_product = get_product(db, product_id)
     if not db_product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Producto no encontrado")
-
     if product.name is not None:
         db_product.name = product.name
     if product.total_stock is not None:
-        db_product.total_stock = product.total_stock  # Solo usar total_stock
-    if product.unit_price is not None:  # Agregar validación para unit_price
-        db_product.unit_price = product.unit_price
+        db_product.total_stock = product.total_stock
     if product.is_active is not None:
         db_product.is_active = product.is_active
     if product.subcategory_id is not None:
         db_product.subcategory_id = product.subcategory_id
-
     db.commit()
     db.refresh(db_product)
     return db_product

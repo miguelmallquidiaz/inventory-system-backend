@@ -15,12 +15,12 @@ def get_user_by_role(db: Session, role: str):
     return user
 
 def create_user(db: Session, user: users_schema.UserCreate):
-    if user.role == "admin":
-        existing_admin = get_user_by_role(db, role="admin")
+    if user.role == "almacen":
+        existing_admin = get_user_by_role(db, role="almacen")
         if existing_admin:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ya existe un usuario con el rol 'admin'."
+                detail="Ya existe un usuario con este rol."
             )
 
     existing_user = get_user_by_email(db, email=user.email)

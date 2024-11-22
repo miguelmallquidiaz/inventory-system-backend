@@ -18,22 +18,22 @@ def create_admin_user():
         user = user_crud.get_user_by_email(db, email=admin_email)
         if not user:
             # Si no existe, verificamos si hay un usuario con el rol admin
-            admin_exists = user_crud.get_user_by_role(db, role="admin")
+            admin_exists = user_crud.get_user_by_role(db, role="almacen")
             if not admin_exists:
                 # Si no existe ningún admin, creamos el usuario admin
                 admin_user = users_schema.UserCreate(
                     email=admin_email,
                     password=admin_password,  # Encriptamos la contraseña
-                    role="admin"
+                    role="almacen"
                 )
                 user_crud.create_user(db=db, user=admin_user)
-                print("Usuario admin creado.")
+                print("Usuario creado.")
             else:
-                print("Ya existe un usuario con rol de admin.")
+                print("Ya existe un usuario con este rol.")
         else:
-            print("El usuario admin ya existe.")
+            print("El usuario ya existe.")
     except Exception as e:
-        print(f"Error al crear el usuario admin: {e}")
+        print(f"Error al crear el usuario: {e}")
     finally:
         # Aseguramos cerrar la sesión
         db.close()

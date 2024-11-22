@@ -7,7 +7,7 @@ from ..schemas import users_schema
 router = APIRouter()
 
 def check_admin_permissions(current_user: users_schema.User):
-    if current_user.role != "admin":
+    if current_user.role != "almacen":
         raise HTTPException(status_code=403, detail="Permisos insuficientes")
 
 @router.post("/", response_model=users_schema.User, status_code=status.HTTP_201_CREATED)

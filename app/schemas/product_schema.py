@@ -6,7 +6,6 @@ import re
 class ProductBase(BaseModel):
     name: str
     total_stock: int
-    unit_price: float
     is_active: bool = True
 
     @classmethod
@@ -28,13 +27,6 @@ class ProductBase(BaseModel):
     def validate_stock(cls, value: int) -> int:
         if value < 0:
             raise ValueError('El stock no puede ser negativo.')
-        return value
-
-    @classmethod
-    @field_validator('unit_price')
-    def validate_unit_price(cls, value: float) -> float:
-        if value < 0:
-            raise ValueError('El precio no puede ser negativo.')
         return value
 
 # Esquema para crear un Product
@@ -63,7 +55,6 @@ class ProductCreate(ProductBase):
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     total_stock: Optional[int] = None
-    unit_price: Optional[float] = None
     is_active: Optional[bool] = None
     subcategory_id: Optional[int] = None
 
@@ -77,12 +68,6 @@ class ProductUpdate(BaseModel):
     def validate_stock(cls, value):
         if value is not None:
             return ProductBase.validate_stock(value)
-        return value
-
-    @field_validator('unit_price')
-    def validate_unit_price(cls, value):
-        if value is not None:
-            return ProductBase.validate_unit_price(value)
         return value
 
 # Esquema para recuperar un Product

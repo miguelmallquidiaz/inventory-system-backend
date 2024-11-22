@@ -21,8 +21,8 @@ class UserCreate(UserBase):
         value = value.strip()
         if not value:
             raise ValueError('El campo no debe ser vacío')
-        if value not in ['admin', 'employee']:
-            raise ValueError('El rol debe ser "admin" o "employee"')
+        if value not in ['local', 'almacen']:
+            raise ValueError('El rol debe ser local o almacen')
         return value
 
 class User(UserBase):

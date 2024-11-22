@@ -4,44 +4,35 @@ from .. import models
 from ..schemas import reservation_schema
 
 def create_reservation(db: Session, reservation_data: reservation_schema.ReservationCreate):
-    # Crear la reserva con estado 'pending'
     db_reservation = models.Reservation(
-        client_dni=reservation_data.client_dni,
-        reservation_status="pending",  # Estado inicial
+        reservation_status="pending",
         payment_date=reservation_data.payment_date,
         delivery_date=reservation_data.delivery_date
     )
     db.add(db_reservation)
     db.commit()
     db.refresh(db_reservation)
-
     # Crear los ítems de la reserva, con verificación de stock
     items = []
     for item in reservation_data.items:
         product = db.query(models.Product).filter(models.Product.id == item.product_code).first()
-
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Producto con código {item.product_code} no encontrado"
             )
-
         reservation_item = models.ReservationItem(
             reservation_id=db_reservation.id,
             product_code=item.product_code,
-            quantity=item.quantity  # Guardamos solo la cantidad
+            quantity=item.quantity
         )
         db.add(reservation_item)
         items.append(reservation_item)
-
-    db.commit()  # Confirmar los ítems de la reserva
-
+    db.commit()
     # Responder con todos los datos necesarios
     return {
         "id": db_reservation.id,
-        "client_dni": db_reservation.client_dni,
         "status": db_reservation.reservation_status,
-        "payment_date": db_reservation.payment_date,
         "delivery_date": db_reservation.delivery_date,
         "items": [{
             "id": item.id,  # Agregar el id del item
@@ -55,20 +46,11 @@ def create_reservation(db: Session, reservation_data: reservation_schema.Reserva
 def get_reservations(db: Session):
     # Obtener todas las reservas con estado "pending" o "completed"
     reservations = db.query(models.Reservation).filter(
-        models.Reservation.reservation_status.in_(["pending", "completed"])
+        models.Reservation.reservation_status.in_(["pendiente", "completado"])
     ).all()
     
     if not reservations:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No hay reservas pendientes ni completadas")
-    
-    return reservations
-
-def get_reservations_by_dni(db: Session, client_dni: str):
-    # Consultar las reservas del cliente por su DNI
-    reservations = db.query(models.Reservation).filter(models.Reservation.client_dni == client_dni).all()
-    
-    if not reservations:
-        raise HTTPException(status_code=404, detail="No se encontraron reservas para el DNI proporcionado")
     
     return reservations
 
@@ -90,8 +72,6 @@ def delete_reservation(db: Session, reservation_id: int):
     # Devolver información sobre la reserva eliminada y sus ítems
     return {
         "id": reservation.id,
-        "client_dni": reservation.client_dni,
-        "payment_date": reservation.payment_date,
         "delivery_date": reservation.delivery_date,
         "items": [{
             "id": item.id,
@@ -124,9 +104,7 @@ def update_reservation(db: Session, reservation_id: int, update_data: reservatio
 
     return {
         "id": db_reservation.id,
-        "client_dni": db_reservation.client_dni,
         "reservation_status": db_reservation.reservation_status,
-        "payment_date": db_reservation.payment_date,
         "delivery_date": db_reservation.delivery_date,
         "items": [{"id": item.id, "reservation_id": item.reservation_id, "product_code": item.product_code, "quantity": item.quantity} for item in items]
     }
@@ -142,9 +120,7 @@ def get_reservation_by_id(db: Session, reservation_id: int):
     
     return {
         "id": reservation.id,
-        "client_dni": reservation.client_dni,
         "reservation_status": reservation.reservation_status,
-        "payment_date": reservation.payment_date,
         "delivery_date": reservation.delivery_date,
         "items": [
             {
