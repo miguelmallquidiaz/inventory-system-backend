@@ -10,26 +10,31 @@ def get_order(db: Session, order_id: int):
 
 # Function to create a new Order
 def create_order(db: Session, order: order_schema.OrderCreate):
-    # Ensure all products exist in the order_details
-    # (Check if product_code exists in the products table, optional depending on implementation)
+    for detail in order.order_details:
+        # Primero verifica si el producto existe
+        product = db.query(models.Product).filter(models.Product.id == detail.product_code).first()
+        if not product:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Producto con código {detail.product_code} no encontrado")
+        
+    # Crear la orden
     delivery_date_plus_3 = order.delivery_date + timedelta(days=3)
-
     db_order = models.Order(delivery_date=delivery_date_plus_3, order_status='pendiente')
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
 
-    # Add the order details, including both product_code and quantity
+    # Agregar los detalles de la orden
     for detail in order.order_details:
         db_order_detail = models.OrderDetail(
             order_id=db_order.id,
             product_code=detail.product_code,
-            quantity=detail.quantity  # Use the quantity provided in the order details
+            quantity=detail.quantity  # Usar la cantidad proporcionada
         )
         db.add(db_order_detail)
 
-    db.commit()  # Commit all changes after adding order and details
+    db.commit()  # Confirmar cambios
     return db_order
+
 
 # Function to update an Order's status
 def update_order_status(db: Session, order_id: int, order_update: order_schema.OrderUpdate):

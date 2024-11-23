@@ -48,7 +48,7 @@ async def read_order_details(order_id: int, db: Session = Depends(database.get_d
     return order_details
 
 # Actualizar el estado de un pedido
-@router.put("/{order_id}", response_model=order_schema.Order)
+@router.patch("/{order_id}", response_model=order_schema.Order)
 async def update_order_status(order_id: int, order: order_schema.OrderUpdate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
     if current_user.role != "almacen":
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")

@@ -22,6 +22,12 @@ class OrderDetailCreate(BaseModel):
     product_code: int  # The product's code (ID)
     quantity: int      # Quantity of the product
 
+    @field_validator('quantity')
+    def validate_quantity(cls, value: int) -> int:
+        if value <= 0:
+            raise ValueError('La cantidad debe ser mayor a 0.')
+        return value
+
 # Schema for updating an Order's status
 class OrderUpdate(BaseModel):
     order_status: Optional[str] = None
