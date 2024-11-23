@@ -43,7 +43,7 @@ class Product(Base):
     subcategory_id = Column(Integer, ForeignKey('subcategories.id'), nullable=False)
     
     subcategory = relationship("Subcategory", back_populates="products")
-    product_items = relationship("order_detail", back_populates="product")
+    product_items = relationship("OrderDetail", back_populates="product")
 
 class Order(Base):
     __tablename__ = 'orders'
@@ -51,14 +51,14 @@ class Order(Base):
     delivery_date = Column(DATE, nullable=False)
     order_status = Column(String(10), nullable=False, default='pendiente')
 
-    order_items = relationship("order_detail", back_populates="reservation")
+    order_details = relationship("OrderDetail", back_populates="order")
 
 class OrderDetail(Base):
     __tablename__ = 'order_detail'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    orders_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
+    order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
     product_code = Column(Integer, ForeignKey('products.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
 
-    order = relationship("Order", back_populates="order_items")
+    order = relationship("Order", back_populates="order_details")
     product = relationship("Product", back_populates="product_items")

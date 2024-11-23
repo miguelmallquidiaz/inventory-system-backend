@@ -15,7 +15,7 @@ class CategoryBase(BaseModel):
             raise ValueError('El nombre debe tener al menos 5 caracteres')
         if len(value) > 30:
             raise ValueError('El nombre no debe exceder los 30 caracteres')
-        if not re.match(r'^[a-z\s]+$', value):
+        if not re.match(r'^[a-záéíóúüñ\s]+$', value):
             raise ValueError('El nombre debe ser solo letras y minúsculas.')
         return value
 

@@ -25,6 +25,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
+    
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -55,7 +56,9 @@ def login_for_access_token(db: Session, form_data: OAuth2PasswordRequestForm):
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # Aquí añadimos 'role' al payload del token
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.email, "role": user.role},  # Añadir 'role' al payload
+        expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}

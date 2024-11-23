@@ -18,7 +18,7 @@ class ProductBase(BaseModel):
             raise ValueError('El nombre debe tener al menos 3 caracteres.')
         if len(value) > 100:
             raise ValueError('El nombre no debe exceder los 100 caracteres.')
-        if not re.match(r'^[a-z\s]+$', value):
+        if not re.match(r'^[a-záéíóúüñ\s]+$', value):
             raise ValueError('El nombre debe ser solo letras y minúsculas.')
         return value
 
@@ -43,12 +43,6 @@ class ProductCreate(ProductBase):
     def validate_stock(cls, value):
         if value is not None:
             return ProductBase.validate_stock(value)
-        return value
-
-    @field_validator('unit_price')
-    def validate_unit_price(cls, value):
-        if value is not None:
-            return ProductBase.validate_unit_price(value)
         return value
 
 # Esquema para actualizar un Product
