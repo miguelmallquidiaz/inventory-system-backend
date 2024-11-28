@@ -62,6 +62,4 @@ def login_for_access_token(db: Session, form_data: OAuth2PasswordRequestForm):
         data={"sub": user.email, "role": user.role},
         expires_delta=access_token_expires
     )
-    print(f"User email: {user.email}")
-    print(f"Generated access token: {access_token}")
     return {"access_token": access_token, "token_type": "bearer"}

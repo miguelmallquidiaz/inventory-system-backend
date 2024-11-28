@@ -5,7 +5,7 @@ from .database import engine
 from . import models, auth
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from app.routers import order, user, auth, category, subcategory, product
+from app.routers import employee, order, auth, category, subcategory, product
 from .initial_data import create_admin_user
 import uvicorn
 # Cargar variables de entorno
@@ -49,7 +49,7 @@ async def root():
 
 # Incluir las rutas
 app.include_router(auth.router, prefix=f"/api/auth", tags=["auth"])
-app.include_router(user.router, prefix=f"/api/employees", tags=["employees"])
+app.include_router(employee.router, prefix=f"/api/employees", tags=["employees"])
 app.include_router(category.router, prefix=f"/api/categories", tags=["categories"])
 app.include_router(subcategory.router, prefix=f"/api/subcategories", tags=["subcategories"])
 app.include_router(product.router, prefix=f"/api/products", tags=["products"])

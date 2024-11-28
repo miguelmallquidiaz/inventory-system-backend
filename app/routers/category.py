@@ -13,15 +13,6 @@ async def create_category(category: category_schema.CategoryCreate, db: Session 
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     return category_crud.create_category(db=db, category=category)
 
-@router.get("/{category_id}", response_model=category_schema.Category)
-async def read_category(category_id: int, db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
-    if current_user.role not in ["local", "almacen"]:
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    category = category_crud.get_category(db, category_id)
-    if not category:
-        raise HTTPException(status_code=404, detail="Categoría no encontrada")
-    return category
-
 @router.get("/", response_model=List[category_schema.Category])
 async def read_categories(db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role not in ["local", "almacen"]:

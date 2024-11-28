@@ -3,6 +3,7 @@ from typing import List, Optional
 from datetime import date
 
 class OrderBase(BaseModel):
+    full_name: Optional[str] = None
     delivery_date: Optional[date] = None
     order_status: str
 

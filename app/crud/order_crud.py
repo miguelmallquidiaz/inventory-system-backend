@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta
 from .. import models
@@ -51,7 +52,16 @@ def update_order_status(db: Session, order_id: int, order_update: order_schema.O
 
 # Function to list orders with basic information (id, delivery_date, order_status)
 def get_orders(db: Session):
-    return db.query(models.Order.id, models.Order.delivery_date, models.Order.order_status).all()
+    return (
+        db.query(
+            models.Order.id,
+            models.Order.delivery_date,
+            models.Order.order_status,
+            func.concat(models.Employee.first_name, " ", models.Employee.last_name).label("full_name"),  # Concatenación
+        )
+        .join(models.Employee, models.Order.employee_id == models.Employee.id)
+        .all()
+    )
 
 # Function to get all details of a specific order
 def get_order_details(db: Session, order_id: int):

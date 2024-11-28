@@ -14,7 +14,7 @@ class Employee(Base):
     hashed_password = Column(String(255))
     role = Column(String(7), nullable=False, default='almacen')
 
-    employee = relationship("Order", back_populates="orders")
+    orders = relationship("Order", back_populates="employee")
 
 # Category Table
 class Category(Base):
@@ -57,7 +57,7 @@ class Order(Base):
     employee_id = Column(Integer, ForeignKey('employees.id'), nullable=False)
 
     order_details = relationship("OrderDetail", back_populates="order")
-    orders = relationship("Employee", back_populates="employee")
+    employee = relationship("Employee", back_populates="orders")
 
 class OrderDetail(Base):
     __tablename__ = 'order_detail'

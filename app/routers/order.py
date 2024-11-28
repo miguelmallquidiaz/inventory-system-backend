@@ -14,18 +14,6 @@ async def create_order(order: order_schema.OrderCreate, db: Session = Depends(da
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     return order_crud.create_order(db=db, order=order, current_user=current_user)
 
-
-# Leer un pedido por su ID
-@router.get("/{order_id}", response_model=order_schema.Order)
-async def read_order(order_id: int, db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
-    if current_user.role not in ["local", "almacen"]:
-        raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
-    order = order_crud.get_order(db, order_id)
-    if not order:
-        raise HTTPException(status_code=404, detail="Pedido no encontrado")
-    return order
-
-# Listar todos los pedidos (con solo fecha y estado)
 @router.get("/", response_model=List[order_schema.Order])
 async def read_orders(db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role not in ["local", "almacen"]:
@@ -39,7 +27,7 @@ async def read_orders(db: Session = Depends(database.get_db), current_user: empl
     return orders
 
 # Leer los detalles de un pedido por su ID
-@router.get("/{order_id}/details", response_model=List[order_schema.OrderDetail])
+@router.get("/{order_id}", response_model=List[order_schema.OrderDetail])
 async def read_order_details(order_id: int, db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role not in ["local", "almacen"]:
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
