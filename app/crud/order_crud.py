@@ -1,38 +1,38 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from datetime import timedelta
 from .. import models
 from ..schemas import order_schema
+from ..auth import get_current_user
 
 # Function to get an Order by ID
 def get_order(db: Session, order_id: int):
     return db.query(models.Order).filter(models.Order.id == order_id).first()
 
 # Function to create a new Order
-def create_order(db: Session, order: order_schema.OrderCreate):
+def create_order(db: Session, order: order_schema.OrderCreate, current_user: models.Employee = Depends(get_current_user)):
+
     for detail in order.order_details:
-        # Primero verifica si el producto existe
         product = db.query(models.Product).filter(models.Product.id == detail.product_code).first()
         if not product:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Producto con código {detail.product_code} no encontrado")
-        
+    
     # Crear la orden
     delivery_date_plus_3 = order.delivery_date + timedelta(days=3)
-    db_order = models.Order(delivery_date=delivery_date_plus_3, order_status='pendiente')
+    db_order = models.Order(delivery_date=delivery_date_plus_3, order_status='pendiente', employee_id=current_user.id)
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
 
-    # Agregar los detalles de la orden
     for detail in order.order_details:
         db_order_detail = models.OrderDetail(
             order_id=db_order.id,
             product_code=detail.product_code,
-            quantity=detail.quantity  # Usar la cantidad proporcionada
+            quantity=detail.quantity
         )
         db.add(db_order_detail)
 
-    db.commit()  # Confirmar cambios
+    db.commit()
     return db_order
 
 

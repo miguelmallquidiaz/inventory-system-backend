@@ -1,8 +1,7 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, field_validator
 from typing import Optional
 import re
 
-# Base class for Subcategory
 class SubcategoryBase(BaseModel):
     name: str
     measures: str
@@ -30,42 +29,34 @@ class SubcategoryBase(BaseModel):
             raise ValueError('Las medidas no deben exceder los 100 caracteres')
         return value
 
-# Schema for creating a Subcategory
 class SubcategoryCreate(SubcategoryBase):
     category_id: int
 
-    # Validators for name
     @field_validator('name')
     def validate_name(cls, value):
         return cls.check_name(value)
-
-    # Validators for measures
     @field_validator('measures')
     def validate_measures(cls, value):
         return cls.check_measures(value)
 
-# Schema for updating a Subcategory
 class SubcategoryUpdate(BaseModel):
     name: Optional[str] = None
     measures: Optional[str] = None
     category_id: Optional[int] = None
     is_active: Optional[bool] = None
 
-    # Validators for name
     @field_validator('name')
     def validate_name(cls, value):
         if value is not None:
             return SubcategoryBase.check_name(value)
         return value
 
-    # Validators for measures
     @field_validator('measures')
     def validate_measures(cls, value):
         if value is not None:
             return SubcategoryBase.check_measures(value)
         return value
 
-# Schema to retrieve a Subcategory
 class Subcategory(SubcategoryBase):
     id: int
     category_id: int

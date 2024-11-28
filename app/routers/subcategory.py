@@ -3,20 +3,20 @@ from sqlalchemy.orm import Session
 from typing import List
 from app import database, auth
 from app.crud import subcategory_crud
-from app.schemas import subcategory_schema, users_schema
+from app.schemas import employee_schema, subcategory_schema
 
 router = APIRouter()
 
 # Crear una subcategoría
 @router.post("/", response_model=subcategory_schema.Subcategory, status_code=status.HTTP_201_CREATED)
-async def create_subcategory(subcategory: subcategory_schema.SubcategoryCreate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+async def create_subcategory(subcategory: subcategory_schema.SubcategoryCreate, db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role != "almacen":
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     return subcategory_crud.create_subcategory(db=db, subcategory=subcategory)
 
 # Leer una subcategoría específica
 @router.get("/{subcategory_id}", response_model=subcategory_schema.Subcategory)
-async def read_subcategory(subcategory_id: int, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+async def read_subcategory(subcategory_id: int, db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role not in ["local", "almacen"]:
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     subcategory = subcategory_crud.get_subcategory(db, subcategory_id)
@@ -26,7 +26,7 @@ async def read_subcategory(subcategory_id: int, db: Session = Depends(database.g
 
 # Leer todas las subcategorías
 @router.get("/", response_model=List[subcategory_schema.Subcategory])
-async def read_subcategories(db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+async def read_subcategories(db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role not in ["local", "almacen"]:
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     subcategories = subcategory_crud.get_all_subcategories(db=db)
@@ -38,7 +38,7 @@ async def read_subcategories(db: Session = Depends(database.get_db), current_use
     return subcategories
 
 @router.put("/{subcategory_id}", response_model=subcategory_schema.Subcategory)
-async def update_subcategory(subcategory_id: int, subcategory: subcategory_schema.SubcategoryUpdate, db: Session = Depends(database.get_db), current_user: users_schema.User = Depends(auth.get_current_user)):
+async def update_subcategory(subcategory_id: int, subcategory: subcategory_schema.SubcategoryUpdate, db: Session = Depends(database.get_db), current_user: employee_schema.Employee = Depends(auth.get_current_user)):
     if current_user.role != "almacen":
         raise HTTPException(status_code=403, detail="No tienes suficientes permisos")
     

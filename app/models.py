@@ -1,16 +1,20 @@
-from sqlalchemy import Column, Integer, Numeric, String, Boolean, ForeignKey, DATE
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DATE
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from .database import Base
 
 Base = declarative_base()
 
-class User(Base):
-    __tablename__ = 'users'
+class Employee(Base):
+    __tablename__ = 'employees'
     id = Column(Integer, primary_key=True)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
     email = Column(String(50), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255))
     role = Column(String(7), nullable=False, default='almacen')
+
+    employee = relationship("Order", back_populates="orders")
 
 # Category Table
 class Category(Base):
@@ -50,8 +54,10 @@ class Order(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     delivery_date = Column(DATE, nullable=False)
     order_status = Column(String(10), nullable=False, default='pendiente')
+    employee_id = Column(Integer, ForeignKey('employees.id'), nullable=False)
 
     order_details = relationship("OrderDetail", back_populates="order")
+    orders = relationship("Employee", back_populates="employee")
 
 class OrderDetail(Base):
     __tablename__ = 'order_detail'

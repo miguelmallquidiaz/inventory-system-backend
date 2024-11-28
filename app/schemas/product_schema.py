@@ -2,7 +2,6 @@ from pydantic import BaseModel, field_validator
 from typing import Optional
 import re
 
-# Clase base para Product
 class ProductBase(BaseModel):
     name: str
     total_stock: int
@@ -29,7 +28,6 @@ class ProductBase(BaseModel):
             raise ValueError('El stock no puede ser negativo.')
         return value
 
-# Esquema para crear un Product
 class ProductCreate(ProductBase):
     subcategory_id: int
 
@@ -45,7 +43,6 @@ class ProductCreate(ProductBase):
             return ProductBase.validate_stock(value)
         return value
 
-# Esquema para actualizar un Product
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     total_stock: Optional[int] = None
@@ -64,7 +61,6 @@ class ProductUpdate(BaseModel):
             return ProductBase.validate_stock(value)
         return value
 
-# Esquema para recuperar un Product
 class Product(ProductBase):
     id: int
     subcategory_id: int

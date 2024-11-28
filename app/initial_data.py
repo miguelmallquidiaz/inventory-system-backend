@@ -1,6 +1,5 @@
-from sqlalchemy.orm import Session
-from .crud import user_crud
-from .schemas import users_schema
+from .crud import employee_crud
+from .schemas import employee_schema
 from .database import SessionLocal
 from passlib.context import CryptContext
 import os
@@ -13,20 +12,24 @@ def create_admin_user():
     try:
         admin_email = os.getenv("ADMIN_EMAIL", "admin@example.com")
         admin_password = os.getenv("ADMIN_PASSWORD", "admin_password")
+        first_name = os.getenv("FIRST_NAME", "miguel")
+        last_name = os.getenv("LAST_NAME", "mallqui")
 
         # Verificamos si el usuario admin ya existe
-        user = user_crud.get_user_by_email(db, email=admin_email)
-        if not user:
+        employee = employee_crud.get_employee_by_email(db, email=admin_email)
+        if not employee:
             # Si no existe, verificamos si hay un usuario con el rol admin
-            admin_exists = user_crud.get_user_by_role(db, role="almacen")
+            admin_exists = employee_crud.get_employee_by_role(db, role="almacen")
             if not admin_exists:
                 # Si no existe ningún admin, creamos el usuario admin
-                admin_user = users_schema.UserCreate(
+                admin_user = employee_schema.EmployeeCreate(
+                    first_name=first_name,
+                    last_name=last_name,
                     email=admin_email,
-                    password=admin_password,  # Encriptamos la contraseña
+                    password=admin_password,
                     role="almacen"
                 )
-                user_crud.create_user(db=db, user=admin_user)
+                employee_crud.create_employee(db=db, employee=admin_user)
                 print("Usuario creado.")
             else:
                 print("Ya existe un usuario con este rol.")

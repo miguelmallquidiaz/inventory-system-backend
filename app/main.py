@@ -49,7 +49,7 @@ async def root():
 
 # Incluir las rutas
 app.include_router(auth.router, prefix=f"/api/auth", tags=["auth"])
-app.include_router(user.router, prefix=f"/api/users", tags=["users"])
+app.include_router(user.router, prefix=f"/api/employees", tags=["employees"])
 app.include_router(category.router, prefix=f"/api/categories", tags=["categories"])
 app.include_router(subcategory.router, prefix=f"/api/subcategories", tags=["subcategories"])
 app.include_router(product.router, prefix=f"/api/products", tags=["products"])

@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from jwt.exceptions import InvalidTokenError
 from dotenv import load_dotenv
 from typing import Optional
-from .crud import user_crud
+from .crud import employee_crud
+from .models import Employee
 
 load_dotenv()
 
@@ -40,15 +41,16 @@ def get_current_user(db: Session = Depends(database.get_db), token: str = Depend
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-    except InvalidTokenError as e:
+        employee = db.query(Employee).filter(Employee.email == email).first()
+        if employee is None:
+            raise credentials_exception
+    except InvalidTokenError:
         raise credentials_exception
-    user = user_crud.get_user_by_email(db, email=email)
-    if user is None:
-        raise credentials_exception
-    return user
+
+    return employee
 
 def login_for_access_token(db: Session, form_data: OAuth2PasswordRequestForm):
-    user = user_crud.authenticate_user(db, form_data.username, form_data.password)
+    user = employee_crud.authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -56,9 +58,10 @@ def login_for_access_token(db: Session, form_data: OAuth2PasswordRequestForm):
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # Aquí añadimos 'role' al payload del token
     access_token = create_access_token(
-        data={"sub": user.email, "role": user.role},  # Añadir 'role' al payload
+        data={"sub": user.email, "role": user.role},
         expires_delta=access_token_expires
     )
+    print(f"User email: {user.email}")
+    print(f"Generated access token: {access_token}")
     return {"access_token": access_token, "token_type": "bearer"}
