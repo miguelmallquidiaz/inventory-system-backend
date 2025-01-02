@@ -77,7 +77,7 @@ PYTHON_VERSION=3.12.5
 uvicorn app.main:app --reload
 ```
 
-### 7. Activar el entorno virtual
+### 7. Ingresar a la documentación de los endpoint en local
 ```bash
 http://localhost:8000/docs
 ```
