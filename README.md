@@ -18,7 +18,7 @@ Repositorio del frontend https://github.com/miguelmallquidiaz/agroselva-react
 
 ### Panel para el empleado
 
-![empleado](https://i.imgur.com/4MpTwcI.png)
+![panel empleado](https://i.imgur.com/7wr2Z9D.png)
 
 ### Registrar pedido para rebastecer el local
 
